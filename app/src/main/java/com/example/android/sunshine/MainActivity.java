@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePrefs;
+import com.example.android.sunshine.util.NetworkUtil;
+
+import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String location = params[0];
+
+            URL requestUrl = NetworkUtil.buildUrl(location);
 
             return null;
         }
