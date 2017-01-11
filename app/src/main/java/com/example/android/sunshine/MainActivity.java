@@ -65,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String[] result) {
 
+            if (result != null) {
+
+                for (String weather : result) {
+
+                    mWeatherText.append(weather + "\n\n\n");
+                }
+            }
         }
     }
 }

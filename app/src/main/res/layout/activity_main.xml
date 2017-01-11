@@ -19,8 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/weather_data"
-            android:text="Hello World!" />
+            android:id="@+id/weather_data" />
 
     </ScrollView>
 
