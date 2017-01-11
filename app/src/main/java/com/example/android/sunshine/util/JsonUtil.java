@@ -81,8 +81,9 @@ public class JsonUtil {
             JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
             high = temperatureObject.getDouble(OWM_MAX);
             low = temperatureObject.getDouble(OWM_MIN);
+            highAndLow = WeatherUtil.formatHighLows(context, high, low);
 
-            //...
+            parsedWeatherData[i] = date + " - " + description + " - " + highAndLow;
         }
 
         return parsedWeatherData;

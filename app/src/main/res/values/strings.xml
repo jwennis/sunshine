@@ -1,8 +1,17 @@
-<resources>
+<resources
+    xmlns:xliff="http://schemas.android.com/tools">
 
     <string name="app_name">Sunshine</string>
 
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+
+    <string name="format_temp_celsius">
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0C
+    </string>
+
+    <string name="format_temp_fahrenheit">
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0F
+    </string>
 
 </resources>
