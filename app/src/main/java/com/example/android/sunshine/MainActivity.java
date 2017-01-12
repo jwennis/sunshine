@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePrefs;
@@ -17,6 +19,7 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mWeatherText;
+    private ProgressBar mLoadingIndicator;
 
 
     @Override
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mWeatherText = (TextView) findViewById(R.id.weather_data);
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
 
         loadWeather();
     }
@@ -65,13 +69,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadWeather() {
 
+        showWeatherDataView();
+
         String location = SunshinePrefs.getPreferredLocation(this);
 
         new FetchWeatherTask().execute(location);
     }
 
 
+    private void showWeatherDataView() {
+
+        mWeatherText.setVisibility(View.VISIBLE);
+    }
+
+
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+
+
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
 
 
         @Override
@@ -104,7 +125,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String[] result) {
 
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+
             if (result != null) {
+
+                showWeatherDataView();
 
                 for (String weather : result) {
 
