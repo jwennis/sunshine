@@ -3,6 +3,8 @@
 
     <string name="app_name">Sunshine</string>
 
+    <string name="action_refresh">Refresh</string>
+
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
 
