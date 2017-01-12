@@ -3,6 +3,8 @@ package com.example.android.sunshine;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +20,11 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mWeatherText;
+    private RecyclerView mForecastRecycler;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
 
+    // TODO: declare ForecastAdapter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        mWeatherText = (TextView) findViewById(R.id.weather_data);
+        mForecastRecycler = (RecyclerView) findViewById(R.id.forecast_recycler);
+        mForecastRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mForecastRecycler.setHasFixedSize(true);
+
+        // TODO: init & set adapter
+
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         mErrorMessage = (TextView) findViewById(R.id.error_message);
 
@@ -54,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_refresh: {
 
-                mWeatherText.setText("");
+                // TODO: reset adapter data
 
                 loadWeather();
 
@@ -82,13 +90,13 @@ public class MainActivity extends AppCompatActivity {
     private void showWeatherDataView() {
 
         mErrorMessage.setVisibility(View.INVISIBLE);
-        mWeatherText.setVisibility(View.VISIBLE);
+        mForecastRecycler.setVisibility(View.VISIBLE);
     }
 
 
     private void showErrorMessage() {
 
-        mWeatherText.setVisibility(View.INVISIBLE);
+        mForecastRecycler.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
     }
 
@@ -141,10 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
                 showWeatherDataView();
 
-                for (String weather : result) {
-
-                    mWeatherText.append(weather + "\n\n\n");
-                }
+                // TODO: apply result to adapter
 
             } else {
 
