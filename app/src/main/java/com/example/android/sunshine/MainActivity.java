@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePrefs;
@@ -37,6 +38,28 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.forecast, menu);
 
         return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()) {
+
+            case R.id.action_refresh: {
+
+                mWeatherText.setText("");
+
+                loadWeather();
+
+                return true;
+            }
+
+            default: {
+
+                return super.onOptionsItemSelected(item);
+            }
+        }
     }
 
 
