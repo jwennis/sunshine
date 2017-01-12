@@ -27,9 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         mWeatherText = (TextView) findViewById(R.id.weather_data);
 
-        String location = SunshinePrefs.getPreferredLocation(this);
-
-        new FetchWeatherTask().execute(location);
+        loadWeather();
     }
 
 
@@ -39,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.forecast, menu);
 
         return true;
+    }
+
+
+    private void loadWeather() {
+
+        String location = SunshinePrefs.getPreferredLocation(this);
+
+        new FetchWeatherTask().execute(location);
     }
 
 
