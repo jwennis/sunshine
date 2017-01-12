@@ -16,4 +16,8 @@
         <xliff:g id="temp">%1.0f</xliff:g>\u00B0F
     </string>
 
+    <string name="error_message">
+        An error has occurred. Please try again by clicking REFRESH
+    </string>
+
 </resources>

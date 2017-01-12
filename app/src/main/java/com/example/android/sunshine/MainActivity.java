@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mWeatherText;
     private ProgressBar mLoadingIndicator;
+    private TextView mErrorMessage;
 
 
     @Override
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         mWeatherText = (TextView) findViewById(R.id.weather_data);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+        mErrorMessage = (TextView) findViewById(R.id.error_message);
 
         loadWeather();
     }
@@ -79,7 +81,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void showWeatherDataView() {
 
+        mErrorMessage.setVisibility(View.INVISIBLE);
         mWeatherText.setVisibility(View.VISIBLE);
+    }
+
+
+    private void showErrorMessage() {
+
+        mWeatherText.setVisibility(View.INVISIBLE);
+        mErrorMessage.setVisibility(View.VISIBLE);
     }
 
 
@@ -135,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
 
                     mWeatherText.append(weather + "\n\n\n");
                 }
+
+            } else {
+
+                showErrorMessage();
             }
         }
     }
