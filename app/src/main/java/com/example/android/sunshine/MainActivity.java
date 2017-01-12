@@ -20,11 +20,12 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ForecastAdapter mForecastAdapter;
+
     private RecyclerView mForecastRecycler;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
 
-    // TODO: declare ForecastAdapter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         mForecastRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mForecastRecycler.setHasFixedSize(true);
 
-        // TODO: init & set adapter
+        mForecastAdapter = new ForecastAdapter();
+        mForecastRecycler.setAdapter(mForecastAdapter);
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         mErrorMessage = (TextView) findViewById(R.id.error_message);
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_refresh: {
 
-                // TODO: reset adapter data
+                mForecastAdapter.setWeatherData(null);
 
                 loadWeather();
 
@@ -149,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
                 showWeatherDataView();
 
-                // TODO: apply result to adapter
+                mForecastAdapter.setWeatherData(result);
 
             } else {
 
