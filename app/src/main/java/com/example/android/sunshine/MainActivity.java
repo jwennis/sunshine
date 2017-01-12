@@ -3,6 +3,7 @@ package com.example.android.sunshine;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.widget.TextView;
 
 import com.example.android.sunshine.data.SunshinePrefs;
@@ -29,6 +30,15 @@ public class MainActivity extends AppCompatActivity {
         String location = SunshinePrefs.getPreferredLocation(this);
 
         new FetchWeatherTask().execute(location);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.forecast, menu);
+
+        return true;
     }
 
 
