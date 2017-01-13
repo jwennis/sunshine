@@ -2,6 +2,7 @@ package com.example.android.sunshine;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.sunshine.ForecastAdapter.ForecastClickHandler;
 import com.example.android.sunshine.data.SunshinePrefs;
 import com.example.android.sunshine.util.JsonUtil;
 import com.example.android.sunshine.util.NetworkUtil;
@@ -18,7 +20,7 @@ import com.example.android.sunshine.util.NetworkUtil;
 import java.net.URL;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ForecastClickHandler {
 
     private ForecastAdapter mForecastAdapter;
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mForecastRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mForecastRecycler.setHasFixedSize(true);
 
-        mForecastAdapter = new ForecastAdapter();
+        mForecastAdapter = new ForecastAdapter(this);
         mForecastRecycler.setAdapter(mForecastAdapter);
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
@@ -76,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
             }
         }
+    }
+
+
+    @Override
+    public void onClick(String weatherString) {
+
+        Snackbar.make(findViewById(android.R.id.content), weatherString, Snackbar.LENGTH_LONG).show();
     }
 
 
