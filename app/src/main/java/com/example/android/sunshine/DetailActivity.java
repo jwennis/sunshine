@@ -3,6 +3,8 @@ package com.example.android.sunshine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
@@ -19,7 +21,7 @@ public class DetailActivity extends AppCompatActivity {
 
         mWeatherData = (TextView) findViewById(R.id.weather_data);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
 
             // TODO: restore instance state
 
@@ -38,5 +40,16 @@ public class DetailActivity extends AppCompatActivity {
                 // TODO: throw WtfException
             }
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.detail, menu);
+
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+
+        return super.onCreateOptionsMenu(menu);
     }
 }
