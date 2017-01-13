@@ -1,8 +1,8 @@
 package com.example.android.sunshine;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -84,7 +84,9 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
     @Override
     public void onClick(String weatherString) {
 
-        Snackbar.make(findViewById(android.R.id.content), weatherString, Snackbar.LENGTH_LONG).show();
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+
+        startActivity(detailIntent);
     }
 
 
