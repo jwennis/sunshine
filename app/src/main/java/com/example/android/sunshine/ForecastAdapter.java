@@ -6,13 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>  {
+public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
 
+    private final ForecastClickHandler mClickHandler;
     private String[] mWeatherData;
 
 
     public ForecastAdapter() {
 
+        mClickHandler = null;
+    }
+
+
+    public ForecastAdapter(ForecastClickHandler handler) {
+
+        mClickHandler = handler;
     }
 
 
@@ -54,7 +62,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
 
-    public class ForecastViewHolder extends RecyclerView.ViewHolder {
+    public interface ForecastClickHandler {
+
+        void onClick(String weatherString);
+    }
+
+
+    public class ForecastViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         public final TextView mWeatherText;
 
@@ -64,6 +79,17 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             super(itemView);
 
             mWeatherText = (TextView) itemView.findViewById(R.id.weather_data);
+
+            itemView.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View view) {
+
+            int pos = getAdapterPosition();
+
+            mClickHandler.onClick(getItemAt(pos));
         }
     }
 }
