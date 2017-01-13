@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
     public void onClick(String weatherString) {
 
         Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra(Intent.EXTRA_TEXT, weatherString);
 
         startActivity(detailIntent);
     }
