@@ -3,11 +3,12 @@ package com.example.android.sunshine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
 
     private String mForecast;
-
+    private TextView mWeatherData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +16,8 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detail);
+
+        mWeatherData = (TextView) findViewById(R.id.weather_data);
 
         if(savedInstanceState != null) {
 
