@@ -31,6 +31,8 @@ public class DetailActivity extends AppCompatActivity {
 
                 mForecast = detailIntent.getStringExtra(Intent.EXTRA_TEXT);
 
+                mWeatherData.setText(mForecast);
+
             } else {
 
                 // TODO: throw WtfException
