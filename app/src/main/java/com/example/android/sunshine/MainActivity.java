@@ -73,6 +73,13 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
                 return true;
             }
 
+            case R.id.action_map: {
+
+                launchMap();
+
+                return true;
+            }
+
             default: {
 
                 return super.onOptionsItemSelected(item);
@@ -112,6 +119,12 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
         mForecastRecycler.setVisibility(View.INVISIBLE);
         mErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+
+    private void launchMap() {
+
+        // TODO: implement this
     }
 
 
