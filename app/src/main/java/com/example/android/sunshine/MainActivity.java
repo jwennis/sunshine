@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +23,11 @@ import com.example.android.sunshine.util.NetworkUtil;
 import java.net.URL;
 
 
-public class MainActivity extends AppCompatActivity implements ForecastClickHandler {
+public class MainActivity extends AppCompatActivity implements ForecastClickHandler,
+        LoaderManager.LoaderCallbacks<String> {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final int FORECAST_LOADER_ID = 0x01;
 
     private ForecastAdapter mForecastAdapter;
 
@@ -50,7 +53,8 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         mErrorMessage = (TextView) findViewById(R.id.error_message);
 
-        loadWeather();
+        //loadWeather();
+        getSupportLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
     }
 
 
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
     }
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -72,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
                 mForecastAdapter.setWeatherData(null);
 
-                loadWeather();
+                //loadWeather();
+                getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
 
                 return true;
             }
@@ -89,6 +95,25 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
                 return super.onOptionsItemSelected(item);
             }
         }
+    }
+
+
+    @Override
+    public android.support.v4.content.Loader<String> onCreateLoader(int id, Bundle args) {
+
+        return null;
+    }
+
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<String> loader, String data) {
+
+    }
+
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<String> loader) {
+
     }
 
 
