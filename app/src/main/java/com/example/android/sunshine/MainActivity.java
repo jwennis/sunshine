@@ -1,12 +1,14 @@
 package com.example.android.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,10 +27,13 @@ import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity implements ForecastClickHandler,
-        LoaderManager.LoaderCallbacks<String[]> {
+        LoaderManager.LoaderCallbacks<String[]>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int FORECAST_LOADER_ID = 0x01;
+
+    private static boolean PREFS_UPDATED = false;
 
     private ForecastAdapter mForecastAdapter;
 
@@ -55,6 +60,23 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
         mErrorMessage = (TextView) findViewById(R.id.error_message);
 
         getSupportLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        if (PREFS_UPDATED) {
+
+            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
+
+            PREFS_UPDATED = false;
+        }
     }
 
 
@@ -183,6 +205,23 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
 
     @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String s) {
+
+        PREFS_UPDATED = true;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+
+    @Override
     public void onClick(String weatherString) {
 
         Intent detailIntent = new Intent(this, DetailActivity.class);
@@ -214,7 +253,8 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
     private void launchMap() {
 
-        String address = "1600 Ampitheatre Parkway, CA";
+        String address = SunshinePrefs.getPreferredLocation(this);
+
         Uri location = Uri.parse("geo:0,0?q=" + address);
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
