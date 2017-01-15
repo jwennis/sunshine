@@ -7,6 +7,7 @@ import com.example.android.sunshine.R;
 
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class DateUtil {
 
@@ -14,6 +15,17 @@ public class DateUtil {
     public static final long MINUTE_MS = SECOND_MS * 60;
     public static final long HOUR_MS = MINUTE_MS * 60;
     public static final long DAY_MS = HOUR_MS * 24;
+
+
+    public static long getNormalizedUtcDateToday() {
+
+        long now = System.currentTimeMillis();
+        long offset = TimeZone.getDefault().getOffset(now);
+        long timeSinceEpochLocal = now + offset;
+        long daysSinceEpochLocal = TimeUnit.MILLISECONDS.toDays(timeSinceEpochLocal);
+
+        return TimeUnit.DAYS.toMillis(daysSinceEpochLocal);
+    }
 
 
     public static long getUTCDateFromLocal(long localDate) {

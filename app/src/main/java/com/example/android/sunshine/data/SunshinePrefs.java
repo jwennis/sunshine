@@ -11,6 +11,8 @@ public class SunshinePrefs {
 
     private static final String DEFAULT_WEATHER_LOCATION = "94043,USA";
 
+    public static final String PREF_COORD_LAT = "coord_lat";
+    public static final String PREF_COORD_LONG = "coord_long";
 
     public static String getPreferredLocation(Context context) {
 
@@ -46,5 +48,16 @@ public class SunshinePrefs {
         }
 
         return userPrefersMetric;
+    }
+
+    public static void setLocationDetails(Context context, double lat, double lon) {
+
+        SharedPreferences.Editor editor =
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+        editor.putLong(PREF_COORD_LAT, Double.doubleToRawLongBits(lat));
+        editor.putLong(PREF_COORD_LONG, Double.doubleToRawLongBits(lon));
+
+        editor.apply();
     }
 }
