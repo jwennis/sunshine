@@ -8,6 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <item name="PrefTheme">@style/PreferenceThemeOverlay</item>
+    <style name="PrefTheme">@style/PreferenceThemeOverlay</style>
 
 </resources>
