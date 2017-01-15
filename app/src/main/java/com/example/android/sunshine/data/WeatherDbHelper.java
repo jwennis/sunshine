@@ -10,7 +10,7 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "weather.db";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
 
     public WeatherDbHelper(Context context) {
@@ -23,8 +23,9 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
 
         final String SQL_CREATE_WEATHER_TABLE = "CREATE TABLE "
-                + WeatherEntry.TABLE_NAME
-                + " ("
+
+                + WeatherEntry.TABLE_NAME + " ("
+
                 + WeatherEntry._ID               + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + WeatherEntry.COLUMN_DATE       + " INTEGER NOT NULL, "
                 + WeatherEntry.COLUMN_WEATHER_ID + " INTEGER NOT NULL, "
@@ -33,8 +34,9 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 + WeatherEntry.COLUMN_HUMIDITY   + " REAL NOT NULL, "
                 + WeatherEntry.COLUMN_PRESSURE   + " REAL NOT NULL, "
                 + WeatherEntry.COLUMN_WIND_SPEED + " REAL NOT NULL, "
-                + WeatherEntry.COLUMN_DEGREES    + " REAL NOT NULL"
-                + ");";
+                + WeatherEntry.COLUMN_DEGREES    + " REAL NOT NULL, "
+
+                + "UNIQUE (" + WeatherEntry.COLUMN_DATE + ") ON CONFLICT REPLACE);";
 
         database.execSQL(SQL_CREATE_WEATHER_TABLE);
     }
