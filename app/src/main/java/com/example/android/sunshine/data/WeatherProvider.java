@@ -176,8 +176,36 @@ public class WeatherProvider extends ContentProvider {
 
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
-        return 0;
+        int numDeleted;
+
+        if(selection == null) {
+
+            selection = "1";
+        }
+
+        switch (sUriMatcher.match(uri)) {
+
+            case CODE_WEATHER: {
+
+                numDeleted = mDatabase.getWritableDatabase().delete(
+                        WeatherEntry.TABLE_NAME, selection, selectionArgs);
+
+                break;
+            }
+
+            default: {
+
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        }
+
+        if (numDeleted > 0) {
+
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numDeleted;
     }
 }
