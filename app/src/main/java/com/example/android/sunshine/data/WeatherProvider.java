@@ -4,9 +4,14 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.example.android.sunshine.data.WeatherContract.WeatherEntry;
+import com.example.android.sunshine.util.DateUtil;
+
 
 public class WeatherProvider extends ContentProvider {
 
@@ -16,6 +21,7 @@ public class WeatherProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     private WeatherDbHelper mDatabase;
+
 
     public static UriMatcher buildUriMatcher() {
 
@@ -27,6 +33,7 @@ public class WeatherProvider extends ContentProvider {
 
         return matcher;
     }
+
 
     @Override
     public boolean onCreate() {
@@ -61,9 +68,9 @@ public class WeatherProvider extends ContentProvider {
 
                 data = mDatabase.getReadableDatabase().query(
 
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherEntry.TABLE_NAME,
                         projection,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " = ? ",
+                        WeatherEntry.COLUMN_DATE + " = ? ",
                         selectionArguments,
                         null,
                         null,
@@ -75,7 +82,7 @@ public class WeatherProvider extends ContentProvider {
             case CODE_WEATHER: {
 
                 data = mDatabase.getReadableDatabase().query(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -86,9 +93,10 @@ public class WeatherProvider extends ContentProvider {
                 break;
             }
 
-            default:
+            default: {
 
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
         }
 
         data.setNotificationUri(getContext().getContentResolver(), uri);
@@ -101,7 +109,62 @@ public class WeatherProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
 
-        return null;
+        throw new UnsupportedOperationException("Insert not supported. Use bulkInsert instead.");
+    }
+
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+
+        final SQLiteDatabase db = mDatabase.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+
+            case CODE_WEATHER: {
+
+                db.beginTransaction();
+
+                int numInserted = 0;
+
+                try {
+
+                    for (ContentValues value : values) {
+
+                        long weatherDate = value.getAsLong(WeatherEntry.COLUMN_DATE);
+
+                        if (!DateUtil.isDateNormalized(weatherDate)) {
+
+                            throw new IllegalArgumentException("Date must be normalized to insert");
+                        }
+
+                        long _id = db.insert(WeatherEntry.TABLE_NAME, null, value);
+
+                        if (_id != -1) {
+
+                            numInserted++;
+                        }
+                    }
+
+                    db.setTransactionSuccessful();
+
+                } finally {
+
+                    db.endTransaction();
+                }
+
+                if (numInserted > 0) {
+
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return numInserted;
+            }
+
+            default: {
+
+                return super.bulkInsert(uri, values);
+            }
+        }
     }
 
 

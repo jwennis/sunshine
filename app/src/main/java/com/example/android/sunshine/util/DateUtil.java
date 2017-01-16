@@ -121,4 +121,10 @@ public class DateUtil {
             return DateUtils.formatDateTime(context, localDate, flags);
         }
     }
+
+
+    public static boolean isDateNormalized(long msSinceEpoch) {
+
+        return msSinceEpoch % DAY_MS == 0;
+    }
 }
