@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class WeatherProvider extends ContentProvider {
@@ -46,9 +47,53 @@ public class WeatherProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
 
-        return null;
+        Cursor data;
+
+        switch (sUriMatcher.match(uri)) {
+
+            case CODE_WEATHER_WITH_DATE: {
+
+                String normalizedUtcDateString = uri.getLastPathSegment();
+                String[] selectionArguments = new String[]{normalizedUtcDateString};
+
+                data = mDatabase.getReadableDatabase().query(
+
+                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        projection,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " = ? ",
+                        selectionArguments,
+                        null,
+                        null,
+                        sortOrder);
+
+                break;
+            }
+
+            case CODE_WEATHER: {
+
+                data = mDatabase.getReadableDatabase().query(
+                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+                break;
+            }
+
+            default:
+
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        data.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return data;
     }
 
 
