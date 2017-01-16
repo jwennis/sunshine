@@ -2,17 +2,37 @@ package com.example.android.sunshine.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
 public class WeatherProvider extends ContentProvider {
 
+    public static final int CODE_WEATHER = 100;
+    public static final int CODE_WEATHER_WITH_DATE = 101;
+
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+    private WeatherDbHelper mDatabase;
+
+    public static UriMatcher buildUriMatcher() {
+
+        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+        final String authority = WeatherContract.CONTENT_AUTHORITY;
+
+        matcher.addURI(authority, WeatherContract.PATH_WEATHER, CODE_WEATHER);
+        matcher.addURI(authority, WeatherContract.PATH_WEATHER + "/#", CODE_WEATHER_WITH_DATE);
+
+        return matcher;
+    }
 
     @Override
     public boolean onCreate() {
 
-        return false;
+        mDatabase = new WeatherDbHelper(getContext());
+
+        return true;
     }
 
 
