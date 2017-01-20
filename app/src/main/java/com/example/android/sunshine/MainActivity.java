@@ -145,57 +145,6 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
         return new CursorLoader(this, WeatherEntry.CONTENT_URI,
                 projection, selection, null, sort);
-
-//        return new AsyncTaskLoader<String[]>(this) {
-//
-//            String[] mWeatherData = null;
-//
-//
-//            @Override
-//            protected void onStartLoading() {
-//
-//                if (mWeatherData != null) {
-//
-//                    deliverResult(mWeatherData);
-//
-//                } else {
-//
-//                    mLoadingIndicator.setVisibility(View.VISIBLE);
-//
-//                    forceLoad();
-//                }
-//            }
-//
-//
-//            @Override
-//            public String[] loadInBackground() {
-//
-//                String location = SunshinePrefs.getPreferredLocation(MainActivity.this);
-//                URL requestUrl = NetworkUtil.buildUrl(location);
-//
-//                try {
-//
-//                    String jsonResponse = NetworkUtil.getHttpResponse(requestUrl);
-//
-//                    return JsonUtil.parseWeatherStrings(MainActivity.this, jsonResponse);
-//
-//                } catch (Exception e) {
-//
-//                    e.printStackTrace();
-//                }
-//
-//                return null;
-//            }
-//
-//
-//            @Override
-//            public void deliverResult(String[] result) {
-//
-//                mWeatherData = result;
-//
-//                super.deliverResult(result);
-//            }
-//        };
     }
 
 
@@ -260,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
     private void invalidateData() {
 
-        mForecastAdapter.setWeatherData(null);
+        //mForecastAdapter.setWeatherData(null);
     }
 
 

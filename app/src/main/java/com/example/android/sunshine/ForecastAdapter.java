@@ -22,20 +22,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     private final Context mContext;
 
     private Cursor mCursor;
-    private String[] mWeatherData;
 
 
     public ForecastAdapter() {
 
         mContext = null;
         mClickHandler = null;
-    }
-
-
-    public ForecastAdapter(ForecastClickHandler handler) {
-
-        mContext = null;
-        mClickHandler = handler;
     }
 
 
@@ -88,14 +80,6 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public int getItemCount() {
 
         return mCursor != null ? mCursor.getCount() : 0;
-    }
-
-
-    public void setWeatherData(String[] data) {
-
-        mWeatherData = data;
-
-        notifyDataSetChanged();
     }
 
 
