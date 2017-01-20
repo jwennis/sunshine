@@ -5,6 +5,8 @@ import android.content.Context;
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.SunshinePrefs;
 
+import java.lang.reflect.Field;
+
 public class WeatherUtil {
 
 
@@ -37,5 +39,37 @@ public class WeatherUtil {
     private static double toFahrenheit(double celsius) {
 
         return (celsius * 1.8) + 32;
+    }
+
+
+    public static String getConditionFromId(Context context, int weatherId) {
+
+        String code;
+
+        if (weatherId >= 200 && weatherId <= 232) {
+
+            code = "2xx";
+
+        } else if (weatherId >= 300 && weatherId <= 321) {
+
+            code = "3xx";
+
+        } else {
+
+            code = String.valueOf(weatherId);
+        }
+
+        try {
+
+            Field f = String.class.getDeclaredField("condition_" + code);
+
+            return context.getString(f.getInt(f));
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return context.getString(R.string.condition_unknown, weatherId);
+        }
     }
 }
