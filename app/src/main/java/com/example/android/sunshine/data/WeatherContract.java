@@ -13,6 +13,9 @@ public class WeatherContract {
 
     public static final class WeatherEntry implements BaseColumns {
 
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_WEATHER).build();
+
         public static final String TABLE_NAME = "weather";
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_WEATHER_ID = "weather_id";

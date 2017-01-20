@@ -2,10 +2,11 @@ package com.example.android.sunshine;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
@@ -20,14 +21,12 @@ import android.widget.TextView;
 
 import com.example.android.sunshine.ForecastAdapter.ForecastClickHandler;
 import com.example.android.sunshine.data.SunshinePrefs;
-import com.example.android.sunshine.util.JsonUtil;
-import com.example.android.sunshine.util.NetworkUtil;
-
-import java.net.URL;
+import com.example.android.sunshine.data.WeatherContract.WeatherEntry;
+import com.example.android.sunshine.util.DateUtil;
 
 
 public class MainActivity extends AppCompatActivity implements ForecastClickHandler,
-        LoaderManager.LoaderCallbacks<String[]>,
+        LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -53,11 +52,13 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
         mForecastRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mForecastRecycler.setHasFixedSize(true);
 
-        mForecastAdapter = new ForecastAdapter(this);
+        mForecastAdapter = new ForecastAdapter(this, this);
         mForecastRecycler.setAdapter(mForecastAdapter);
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         mErrorMessage = (TextView) findViewById(R.id.error_message);
+
+        showLoadingIndicator();
 
         getSupportLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
 
@@ -126,83 +127,102 @@ public class MainActivity extends AppCompatActivity implements ForecastClickHand
 
 
     @Override
-    public Loader<String[]> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        return new AsyncTaskLoader<String[]>(this) {
+        if(id != FORECAST_LOADER_ID) {
 
-            String[] mWeatherData = null;
-
-
-            @Override
-            protected void onStartLoading() {
-
-                if (mWeatherData != null) {
-
-                    deliverResult(mWeatherData);
-
-                } else {
-
-                    mLoadingIndicator.setVisibility(View.VISIBLE);
-
-                    forceLoad();
-                }
-            }
-
-
-            @Override
-            public String[] loadInBackground() {
-
-                String location = SunshinePrefs.getPreferredLocation(MainActivity.this);
-                URL requestUrl = NetworkUtil.buildUrl(location);
-
-                try {
-
-                    String jsonResponse = NetworkUtil.getHttpResponse(requestUrl);
-
-                    return JsonUtil.parseWeatherStrings(MainActivity.this, jsonResponse);
-
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-
-            @Override
-            public void deliverResult(String[] result) {
-
-                mWeatherData = result;
-
-                super.deliverResult(result);
-            }
-        };
-    }
-
-
-    @Override
-    public void onLoadFinished(Loader<String[]> loader, String[] data) {
-
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mForecastAdapter.setWeatherData(data);
-
-        if (data == null) {
-
-            showErrorMessage();
-
-        } else {
-
-            showWeatherDataView();
+            throw new RuntimeException("Loader not implemented: " + id);
         }
+
+        String[] projection = {
+                WeatherEntry.COLUMN_DATE, WeatherEntry.COLUMN_MAX_TEMP,
+                WeatherEntry.COLUMN_MIN_TEMP, WeatherEntry.COLUMN_WEATHER_ID };
+
+        String selection = WeatherEntry.COLUMN_DATE + " >= "
+                + DateUtil.normalizeDate(System.currentTimeMillis());
+
+        String sort = WeatherEntry.COLUMN_DATE + " ASC";
+
+        return new CursorLoader(this, WeatherEntry.CONTENT_URI,
+                projection, selection, null, sort);
+
+//        return new AsyncTaskLoader<String[]>(this) {
+//
+//            String[] mWeatherData = null;
+//
+//
+//            @Override
+//            protected void onStartLoading() {
+//
+//                if (mWeatherData != null) {
+//
+//                    deliverResult(mWeatherData);
+//
+//                } else {
+//
+//                    mLoadingIndicator.setVisibility(View.VISIBLE);
+//
+//                    forceLoad();
+//                }
+//            }
+//
+//
+//            @Override
+//            public String[] loadInBackground() {
+//
+//                String location = SunshinePrefs.getPreferredLocation(MainActivity.this);
+//                URL requestUrl = NetworkUtil.buildUrl(location);
+//
+//                try {
+//
+//                    String jsonResponse = NetworkUtil.getHttpResponse(requestUrl);
+//
+//                    return JsonUtil.parseWeatherStrings(MainActivity.this, jsonResponse);
+//
+//                } catch (Exception e) {
+//
+//                    e.printStackTrace();
+//                }
+//
+//                return null;
+//            }
+//
+//
+//            @Override
+//            public void deliverResult(String[] result) {
+//
+//                mWeatherData = result;
+//
+//                super.deliverResult(result);
+//            }
+//        };
     }
 
 
     @Override
-    public void onLoaderReset(Loader<String[]> loader) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        mForecastAdapter.swapCursor(data);
+
+        //if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
+        //mRecyclerView.smoothScrollToPosition(mPosition);
+
+        if (data.getCount() != 0) showWeatherDataView();
     }
 
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        mForecastAdapter.swapCursor(null);
+    }
+
+
+    private void showLoadingIndicator() {
+
+        mForecastRecycler.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String s) {
