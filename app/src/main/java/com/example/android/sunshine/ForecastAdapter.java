@@ -1,5 +1,7 @@
 package com.example.android.sunshine;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,17 +11,29 @@ import android.widget.TextView;
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
 
     private final ForecastClickHandler mClickHandler;
+    private final Context mContext;
+
+    private Cursor mCursor;
     private String[] mWeatherData;
 
 
     public ForecastAdapter() {
 
+        mContext = null;
         mClickHandler = null;
     }
 
 
     public ForecastAdapter(ForecastClickHandler handler) {
 
+        mContext = null;
+        mClickHandler = handler;
+    }
+
+
+    public ForecastAdapter(Context context, ForecastClickHandler handler) {
+
+        mContext = context;
         mClickHandler = handler;
     }
 
@@ -61,6 +75,13 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         notifyDataSetChanged();
     }
 
+
+    public void swapCursor(Cursor newCursor) {
+
+        mCursor = newCursor;
+
+        notifyDataSetChanged();
+    }
 
     public interface ForecastClickHandler {
 
